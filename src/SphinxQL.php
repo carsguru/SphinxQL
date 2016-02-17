@@ -1,5 +1,5 @@
 <?php
-namespace gkairms\SphinxQL;
+namespace Gkarims\SphinxQL;
 	/*
 	        Read Documentation, Luke.
 

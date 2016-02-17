@@ -8,5 +8,10 @@
       "name": "Karim",
       "email": "gkarims@gmail.com"
     }
-  ]
+  ],
+  "autoload": {
+    "psr-4": {
+      "Gkarims\\SphinxQL\\": "src/"
+    }
+  },
 }
