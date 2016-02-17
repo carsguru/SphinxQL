@@ -13,5 +13,5 @@
     "psr-4": {
       "Gkarims\\SphinxQL\\": "src/"
     }
-  },
+  }
 }
