@@ -37,7 +37,7 @@ namespace Gkarims\SphinxQL;
 	{
 
 		/**
-		 * @var array A collection of SphinxQL_Clients
+		 * @var SphinxQL_Client[] A collection of
 		 */
 		protected static $_handles = array();
 		private static $instance = NULL;
@@ -409,6 +409,8 @@ namespace Gkarims\SphinxQL;
 		 */
 		protected $_sphinx = NULL;
 
+		protected $_sql_parts = array();
+
 		/**
 		 * Constructor
 		 *
@@ -497,6 +499,12 @@ namespace Gkarims\SphinxQL;
 				$wheres[] = sprintf( "%s %s %s", $where['field'], $where['operator'], $where['value'] );
 			}
 			unset( $where );
+
+			foreach ($this->_sql_parts as $where)
+			{
+				$wheres[] = $where;
+			}
+			unset($where);
 
 			foreach ( $this->_orders as $order )
 			{
@@ -809,6 +817,24 @@ namespace Gkarims\SphinxQL;
 			{
 				$this->where( $field, '(' . implode( ', ', $values ) . ')', 'IN', FALSE );
 			}
+
+			return $this;
+		}
+
+		/**
+		 * Add raw sql expression
+		 *
+		 * @param string $sql
+		 * @return SphinxQL
+		 */
+		public function whereSql($sql)
+		{
+			if (!is_string($sql) || empty($sql))
+			{
+				return FALSE;
+			}
+
+			$this->_sql_parts[] = $sql;
 
 			return $this;
 		}
