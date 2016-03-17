@@ -652,10 +652,15 @@ namespace Gkarims\SphinxQL;
 		 */
 		public function removeField( $alias )
 		{
-
-			if ( is_string( $alias ) AND array_key_exists( $this->_fields, $alias ) )
-			{
-				unset( $this->_fields[$alias] );
+			if (is_string($alias)) {
+				$fields = array();
+				foreach ($this->_fields as $field) {
+					if ($field['alias'] === $alias) {
+						continue;
+					}
+					$fields[] = $field;
+				}
+				$this->_fields = $fields;
 			}
 
 			return $this;
