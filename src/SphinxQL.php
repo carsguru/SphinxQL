@@ -452,7 +452,7 @@ namespace Gkarims\SphinxQL;
 			}
 			elseif ( $sphinx === NULL )
 			{
-				return $sphinx;
+				return $this->_sphinx;
 			}
 
 			return FALSE;
