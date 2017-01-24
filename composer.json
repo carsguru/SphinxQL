@@ -1,17 +1,22 @@
 {
-  "name": "gkarims/sphinxql",
+  "name": "carsguru/sphinxql",
   "description": "Internal Sphinx QL library",
   "minimum-stability": "stable",
   "license": "proprietary",
+  "type": "library",
+  "keywords": ["sphinx"],
   "authors": [
     {
-      "name": "Karim",
-      "email": "gkarims@gmail.com"
+      "name": "CarsGuru",
+      "email": "techdep@carsguru.net"
     }
   ],
+  "support": {
+    "email": "feedback@carsguru.net"
+  },
   "autoload": {
     "psr-4": {
-      "Gkarims\\SphinxQL\\": "src/"
+      "CarsGuru\\SphinxQL\\": "src/"
     }
   }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Gkarims\SphinxQL;
+namespace CarsGuru\SphinxQL;
 	/*
 	        Read Documentation, Luke.
 
