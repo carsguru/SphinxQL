@@ -233,7 +233,7 @@ namespace Gkarims\SphinxQL;
 		 */
 		protected $_server = FALSE;
 		/**
-		 * @var resource A reference to the mysql link that this client will be using
+		 * @var \mysqli resource A reference to the mysql link that this client will be using
 		 */
 		protected $_handle = FALSE;
 		/**
@@ -267,33 +267,38 @@ namespace Gkarims\SphinxQL;
 		 *
 		 * @return boolean Status of the connection attempt
 		 */
-		protected function connect()
-		{
+        protected function connect()
+        {
+            if ($this->_failed) {
+                throw new SphinxqlConnectException('Connection already failed for server : ' . $this->_server);
+            }
 
-			if ( $this->_handle )
-			{
-				return TRUE;
-			}
-			if ( $this->_failed )
-			{
-				throw new SphinxqlConnectException('Connection already failed for server : ' . $this->_server);
-			}
-			if ( $this->_server === FALSE )
-			{
-				return FALSE;
-			}
-			try
-			{
-				$tmp = explode( ':', $this->_server );
-				$this->_handle = new \mysqli( $tmp[0], '', '', '', $tmp[1] );
-			}
-			catch ( \Exception $e )
-			{
-				$this->_failed = TRUE;
-				throw new SphinxqlConnectException($e->getMessage());
-			}
-			return TRUE;
-		}
+            try {
+                // If not exist connection - create
+                if (!$this->_handle instanceof mysqli) {
+                    $this->_handle = $this->instanceConnect();
+                    return true;
+                }
+
+                // Check connection with sphinx
+                $ping = @$this->_handle->ping();
+
+                // If connection lost to do something
+                if (!$ping) {
+                    // If connection error equal 2006 than reconnect
+                    if (2006 != $this->_handle->errno) {
+                        throw new Exception($this->_handle->error, $this->_handle->errno);
+                    }
+                    $this->_handle = $this->instanceConnect();
+                }
+                return true;
+            } catch (SphinxqlHaveNotServerException $e) {
+                return false;
+            } catch (SphinxqlConnectException $e) {
+                $this->_failed = true;
+                throw $e;
+            }
+        }
 
 		/**
 		 * Perform a query
@@ -358,6 +363,27 @@ namespace Gkarims\SphinxQL;
 			}
 			return $ret;
 		}
+
+		/**
+		 * Returns connection to sphinx
+		 *
+		 * @return mysqli
+		 * @throws SphinxqlConnectException
+		 * @throws SphinxqlHaveNotServerException
+		 */
+        private function instanceConnect()
+        {
+            if (!$this->_server) {
+                throw new SphinxqlHaveNotServerException('Have not address of server');
+            }
+            try {
+                $tmp = explode(':', $this->_server);
+
+                return new mysqli($tmp[0], '', '', '', $tmp[1]);
+            } catch (Exception $e) {
+                throw new SphinxqlConnectException($e->getMessage());
+            }
+        }
 	}
 
 
@@ -1102,3 +1128,4 @@ namespace Gkarims\SphinxQL;
 		}
 	}
 
+	class SphinxqlHaveNotServerException extends \Exception {}
