@@ -275,7 +275,7 @@ namespace CarsGuru\SphinxQL;
 
             try {
                 // If not exist connection - create
-                if (!$this->_handle instanceof mysqli) {
+                if (!$this->_handle instanceof \mysqli) {
                     $this->_handle = $this->instanceConnect();
                     return true;
                 }
@@ -287,7 +287,7 @@ namespace CarsGuru\SphinxQL;
                 if (!$ping) {
                     // If connection error equal 2006 than reconnect
                     if (2006 != $this->_handle->errno) {
-                        throw new Exception($this->_handle->error, $this->_handle->errno);
+                        throw new \Exception($this->_handle->error, $this->_handle->errno);
                     }
                     $this->_handle = $this->instanceConnect();
                 }
@@ -379,8 +379,8 @@ namespace CarsGuru\SphinxQL;
             try {
                 $tmp = explode(':', $this->_server);
 
-                return new mysqli($tmp[0], '', '', '', $tmp[1]);
-            } catch (Exception $e) {
+                return new \mysqli($tmp[0], '', '', '', $tmp[1]);
+            } catch (\Exception $e) {
                 throw new SphinxqlConnectException($e->getMessage());
             }
         }
@@ -444,7 +444,6 @@ namespace CarsGuru\SphinxQL;
 		 */
 		public function __construct( SphinxQL $sphinx )
 		{
-
 			$this->sphinx( $sphinx );
 		}
 
@@ -455,7 +454,6 @@ namespace CarsGuru\SphinxQL;
 		 */
 		public function __toString()
 		{
-
 			return $this->build();
 		}
 
